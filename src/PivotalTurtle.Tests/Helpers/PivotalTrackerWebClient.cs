@@ -77,7 +77,7 @@
 			return @"{
            ""project_color"": ""8100ea"",
            ""id"": 108,
-           ""project_id"": 98,
+           ""project_id"": " + project.Id + @",
            ""project_name"": """ + project.Name + @""",
            ""role"": ""owner"",
            ""last_viewed_at"": ""2014-02-04T12:00:00Z"",
@@ -106,11 +106,11 @@
        ""id"": " + story.Id + @",
        ""estimate"": 2,
        ""story_type"": ""feature"",
-       ""project_id"": 99,
+       ""project_id"": " + story.ProjectId + @",
        ""owned_by_id"": 101,
        ""updated_at"": ""2014-02-04T12:00:00Z"",
        ""created_at"": ""2014-02-04T12:00:00Z"",
-       ""current_state"": ""started"",
+       ""current_state"": """ + story.State.ToString().ToLowerInvariant() + @""",
        ""url"": ""http://localhost/story/show/556"",
        ""name"": """ + story.Name + @""",
        ""labels"":

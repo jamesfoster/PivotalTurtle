@@ -84,6 +84,7 @@
     <Compile Include="StoryList\StoryListWindow.Designer.cs">
       <DependentUpon>StoryListWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="StoryState.cs" />
     <Compile Include="WebClientProvider.cs" />
     <Compile Include="WebClientWrapper.cs" />
   </ItemGroup>

@@ -2,6 +2,7 @@
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Globalization;
 	using System.Windows.Forms;
 
 	public partial class StoryListWindow : Form
@@ -24,7 +25,7 @@
 		public void SetProjects(IEnumerable<Project> newProjects)
 		{
 			projects.Clear();
-			foreach (var project in projects)
+			foreach (var project in newProjects)
 			{
 				projects.Add(project);
 			}
@@ -54,8 +55,10 @@
 							Text = "",
 							Tag = story
 						};
-					item.SubItems.Add("123");
+					item.SubItems.Add(story.Id.ToString(CultureInfo.InvariantCulture));
 					item.SubItems.Add(story.Name);
+					item.SubItems.Add(story.State.ToString());
+					item.SubItems.Add(ProjectName(story.ProjectId));
 
 					storiesListView.Items.Add(item);
 				}
@@ -64,6 +67,13 @@
 			{
 				storiesListView.EndUpdate();
 			}
+		}
+
+		private string ProjectName(long projectId)
+		{
+			var project = projects.Find(p => p.Id == projectId);
+
+			return project != null ? project.Name : "unknown";
 		}
 
 		private void storiesListView_ItemChecked(object sender, ItemCheckedEventArgs e)

@@ -32,7 +32,10 @@
 			this.columnHeaderCheck = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeaderId = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.button1 = new System.Windows.Forms.Button();
+			this.columnHeaderProject = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.okButton = new System.Windows.Forms.Button();
+			this.cancelButton = new System.Windows.Forms.Button();
+			this.columnHeaderState = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.SuspendLayout();
 			// 
 			// storiesListView
@@ -44,10 +47,12 @@
 			this.storiesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeaderCheck,
             this.columnHeaderId,
-            this.columnHeaderName});
+            this.columnHeaderName,
+            this.columnHeaderState,
+            this.columnHeaderProject});
 			this.storiesListView.Location = new System.Drawing.Point(12, 12);
 			this.storiesListView.Name = "storiesListView";
-			this.storiesListView.Size = new System.Drawing.Size(413, 220);
+			this.storiesListView.Size = new System.Drawing.Size(705, 220);
 			this.storiesListView.TabIndex = 0;
 			this.storiesListView.UseCompatibleStateImageBehavior = false;
 			this.storiesListView.View = System.Windows.Forms.View.Details;
@@ -66,26 +71,51 @@
 			// columnHeaderName
 			// 
 			this.columnHeaderName.Text = "Name";
-			this.columnHeaderName.Width = 600;
+			this.columnHeaderName.Width = 400;
 			// 
-			// button1
+			// columnHeaderProject
 			// 
-			this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.button1.Location = new System.Drawing.Point(184, 249);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(75, 23);
-			this.button1.TabIndex = 1;
-			this.button1.Text = "OK";
-			this.button1.UseVisualStyleBackColor = true;
+			this.columnHeaderProject.Text = "Project";
+			this.columnHeaderProject.Width = 140;
+			// 
+			// okButton
+			// 
+			this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.okButton.Location = new System.Drawing.Point(290, 249);
+			this.okButton.Name = "okButton";
+			this.okButton.Size = new System.Drawing.Size(75, 23);
+			this.okButton.TabIndex = 1;
+			this.okButton.Text = "OK";
+			this.okButton.UseVisualStyleBackColor = true;
+			// 
+			// cancelButton
+			// 
+			this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.cancelButton.Location = new System.Drawing.Point(372, 249);
+			this.cancelButton.Name = "cancelButton";
+			this.cancelButton.Size = new System.Drawing.Size(75, 23);
+			this.cancelButton.TabIndex = 2;
+			this.cancelButton.Text = "Cancel";
+			this.cancelButton.UseVisualStyleBackColor = true;
+			// 
+			// columnHeaderState
+			// 
+			this.columnHeaderState.Text = "State";
 			// 
 			// StoryListWindow
 			// 
+			this.AcceptButton = this.okButton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(437, 284);
-			this.Controls.Add(this.button1);
+			this.CancelButton = this.cancelButton;
+			this.ClientSize = new System.Drawing.Size(729, 284);
+			this.Controls.Add(this.cancelButton);
+			this.Controls.Add(this.okButton);
 			this.Controls.Add(this.storiesListView);
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "StoryListWindow";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "StoryListWindow";
 			this.ResumeLayout(false);
 
@@ -97,7 +127,10 @@
 		private System.Windows.Forms.ColumnHeader columnHeaderCheck;
 		private System.Windows.Forms.ColumnHeader columnHeaderId;
 		private System.Windows.Forms.ColumnHeader columnHeaderName;
-		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.Button okButton;
+		private System.Windows.Forms.Button cancelButton;
+		private System.Windows.Forms.ColumnHeader columnHeaderProject;
+		private System.Windows.Forms.ColumnHeader columnHeaderState;
 
 	}
 }

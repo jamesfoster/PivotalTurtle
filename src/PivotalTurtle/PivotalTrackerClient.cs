@@ -2,6 +2,7 @@
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.Text;
 	using System.Threading.Tasks;
 	using Newtonsoft.Json.Linq;
@@ -21,75 +22,87 @@
 
 		public async Task Authenticate(string token)
 		{
-			using (var webClient = WebClientProvider.GetClient())
-			{
-				var headers = new Dictionary<string, string>();
-				AddTokenAuthHeader(headers, token);
+			var jToken = await MakeRequest("https://www.pivotaltracker.com/services/v5/me", token);
 
-				var response = await webClient.GetStringAsync("https://www.pivotaltracker.com/services/v5/me", headers);
+			if (jToken == null)
+				return;
 
-				JToken jToken;
-				if (!TryParseJson(response, out jToken))
-					return;
+			dynamic json = jToken;
 
-				dynamic json = jToken;
-
-				Token = json.api_token;
-			}
+			Token = json.api_token;
 		}
 
 		public async Task<List<Project>> GetProjects()
 		{
-			using (var webClient = WebClientProvider.GetClient())
+			var jToken = await MakeRequest("https://www.pivotaltracker.com/services/v5/me", Token);
+
+			if (jToken == null)
+				return new List<Project>();
+
+			dynamic json = jToken;
+
+			var projects = new List<Project>();
+			foreach (var project in json.projects)
 			{
-				var headers = new Dictionary<string, string>();
-				AddTokenAuthHeader(headers, Token);
-				var response = await webClient.GetStringAsync("https://www.pivotaltracker.com/services/v5/me", headers);
-
-				JToken jToken;
-				if (!TryParseJson(response, out jToken))
-					return new List<Project>();
-
-				dynamic json = jToken;
-
-				var projects = new List<Project>();
-				foreach (var project in json.projects)
-				{
-					projects.Add(new Project
-						{
-							Name = project.project_name
-						});
-				}
-
-				return projects;
+				projects.Add(new Project
+					{
+						Id = project.project_id,
+						Name = project.project_name
+					});
 			}
+
+			return projects;
 		}
 
 		public async Task<List<Story>> GetAssignedStories()
 		{
+			var jToken = await MakeRequest("https://www.pivotaltracker.com/services/v5/my/work", Token);
+
+			if (jToken == null)
+				return new List<Story>();
+
+			dynamic json = jToken;
+
+			var stories = new List<Story>();
+			foreach (var story in json)
+			{
+				StoryState state = ParseState(story.current_state.ToString());
+				stories.Add(new Story
+					{
+						Id = story.id,
+						Name = story.name,
+						ProjectId = story.project_id,
+						State = state
+					});
+			}
+
+			return stories;
+		}
+
+		private StoryState ParseState(string currentState)
+		{
+			var values = Enum.GetValues(typeof(StoryState));
+
+			var state = values
+				.Cast<StoryState?>()
+				.FirstOrDefault(x => x != null && x.Value.ToString().ToLowerInvariant() == currentState);
+
+			return state == null ? StoryState.Unscheduled : state.Value;
+		}
+
+		private async Task<JToken> MakeRequest(string url, string token)
+		{
 			using (var webClient = WebClientProvider.GetClient())
 			{
 				var headers = new Dictionary<string, string>();
-				AddTokenAuthHeader(headers, Token);
-				var response = await webClient.GetStringAsync("https://www.pivotaltracker.com/services/v5/my/work", headers);
+				AddTokenAuthHeader(headers, token);
+				var response = await webClient.GetStringAsync(url, headers);
 
 				JToken jToken;
 				if (!TryParseJson(response, out jToken))
-					return new List<Story>();
+					return null;
 
-				dynamic json = jToken;
-
-				var stories = new List<Story>();
-				foreach (var story in json)
-				{
-					stories.Add(new Story
-					{
-						Id = story.id,
-						Name = story.name
-					});
-				}
-
-				return stories;
+				return jToken;
 			}
 		}
 
