@@ -3,6 +3,7 @@
 	using System;
 	using System.Runtime.InteropServices;
 	using Interop.BugTraqProvider;
+	using Microsoft.Win32;
 	using PivotalTurtle.Auth;
 	using PivotalTurtle.Services;
 	using PivotalTurtle.StoryList;
@@ -80,5 +81,41 @@
 			return "Select Stories";
 		}
 
+		#region Com registration
+
+		[ComRegisterFunction]
+		public static void Register(Type t)
+		{
+			var subkey = GetCategorySubkey(t.GUID);
+			Registry.ClassesRoot.CreateSubKey(subkey);
+
+			var clsidKey = GetClassSubkey(t.GUID);
+			var key = Registry.ClassesRoot.OpenSubKey(clsidKey, true);
+			key.SetValue("", "PivotalTurtle");
+		}
+
+		[ComUnregisterFunction]
+		public static void Unegister(Type t)
+		{
+			var subkey = GetCategorySubkey(t.GUID);
+			Registry.ClassesRoot.DeleteSubKey(subkey, false);
+		}
+
+		private static string GetCategorySubkey(Guid guid)
+		{
+			const string categoryGuid = "3494FA92-B139-4730-9591-01135D5E7831";
+
+			var clsid = GetClassSubkey(guid);
+			var subkey = string.Format("{0}\\Implemented Categories\\{{{1}}}", clsid, categoryGuid);
+			return subkey;
+		}
+
+		private static string GetClassSubkey(Guid guid)
+		{
+			var clsid = string.Format("CLSID\\{0}", guid.ToString("B"));
+			return clsid;
+		}
+
+		#endregion Com registration
 	}
 }
