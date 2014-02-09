@@ -21,7 +21,9 @@
 			BugTrackProvider = new PivotalTrackerBugTrackProvider
 				{
 					AuthController = new AuthController(new LogInView(), pivotalTrackerClient),
-					StoryListController = new StoryListController(new StoryListView(), pivotalTrackerClient, new MessageBoxService())
+					StoryListController = new StoryListController(new StoryListView(), pivotalTrackerClient, new MessageBoxService()),
+					GitConfig = new GitConfig(),
+					MessageBoxService = new MessageBoxService()
 				};
 		}
 

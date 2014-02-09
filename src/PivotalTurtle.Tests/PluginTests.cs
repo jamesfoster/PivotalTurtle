@@ -4,6 +4,9 @@
 	using System.Threading.Tasks;
 	using DeepEqual.Syntax;
 	using Moq;
+	using PivotalTurtle.Auth;
+	using PivotalTurtle.Services;
+	using PivotalTurtle.StoryList;
 	using Ploeh.AutoFixture;
 	using Ploeh.AutoFixture.AutoMoq;
 	using Shouldly;
@@ -97,6 +100,25 @@
 			var newParameters = plugin.ShowOptionsDialog(default(IntPtr), parameters);
 
 			newParameters.ShouldBe(parameters);
+		}
+
+		[Fact]
+		public void Creation_tests()
+		{
+			plugin.BugTrackProvider.ShouldBeTypeOf<PivotalTrackerBugTrackProvider>();
+
+			var provider = (PivotalTrackerBugTrackProvider)plugin.BugTrackProvider;
+			provider.AuthController.ShouldBeTypeOf<AuthController>();
+			provider.StoryListController.ShouldBeTypeOf<StoryListController>();
+			provider.GitConfig.ShouldBeTypeOf<GitConfig>();
+			provider.MessageBoxService.ShouldBeTypeOf<MessageBoxService>();
+
+			var authController = (AuthController)provider.AuthController;
+			authController.Client.ShouldBeTypeOf<PivotalTrackerClient>();
+
+			var storyListController = (StoryListController)provider.StoryListController;
+			storyListController.Client.ShouldBeTypeOf<PivotalTrackerClient>();
+			storyListController.MessageBoxService.ShouldBeTypeOf<MessageBoxService>();
 		}
 	}
 }

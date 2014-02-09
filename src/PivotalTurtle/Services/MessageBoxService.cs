@@ -3,7 +3,7 @@
 	using System.Threading.Tasks;
 	using System.Windows.Forms;
 
-	class MessageBoxService : IMessageBoxService
+	public class MessageBoxService : IMessageBoxService
 	{
 		public Task ShowMessage(string message)
 		{
