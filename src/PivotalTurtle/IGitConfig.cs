@@ -4,6 +4,6 @@
 
 	public interface IGitConfig
 	{
-		Dictionary<string, string> Execute();
+		Dictionary<string, string> Load();
 	}
 }

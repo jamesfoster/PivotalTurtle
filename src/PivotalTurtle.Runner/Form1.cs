@@ -26,7 +26,7 @@ namespace PivotalTurtle.Runner
 			string[] revPropNames;
 			string[] revPropValues;
 
-			Plugin.GetCommitMessage2(
+			var newMessage = Plugin.GetCommitMessage2(
 				default(IntPtr), 
 				"", 
 				"", 
@@ -37,6 +37,8 @@ namespace PivotalTurtle.Runner
 				out bugIdOut,
 				out revPropNames,
 				out revPropValues);
+
+			textBox1.Text = newMessage;
 		}
 	}
 }

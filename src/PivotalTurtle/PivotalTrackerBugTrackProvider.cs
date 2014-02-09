@@ -31,7 +31,7 @@
 
 		private Settings LoadSettings()
 		{
-			var config = GitConfig.Execute();
+			var config = GitConfig.Load();
 
 			return new Settings(config);
 		}

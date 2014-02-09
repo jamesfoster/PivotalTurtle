@@ -49,10 +49,13 @@
     <Compile Include="Auth\AuthController.cs" />
     <Compile Include="CommitDetails.cs" />
     <Compile Include="Auth\IAuthController.cs" />
+    <Compile Include="GitConfig.cs" />
     <Compile Include="IBugTrackProvider.cs" />
     <Compile Include="Auth\ILogInView.cs" />
+    <Compile Include="IGitConfig.cs" />
     <Compile Include="Services\IMessageBoxService.cs" />
     <Compile Include="IPivotalTrackerClient.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Story.cs" />
     <Compile Include="StoryList\IStoryListController.cs" />
     <Compile Include="StoryList\IStoryListView.cs" />

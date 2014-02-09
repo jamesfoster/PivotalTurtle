@@ -61,7 +61,7 @@
 
 			var gitConfigMock = new Mock<IGitConfig>();
 			gitConfig = new Dictionary<string, string>();
-			gitConfigMock.Setup(x => x.Execute())
+			gitConfigMock.Setup(x => x.Load())
 				.Returns(gitConfig);
 
 			provider = new PivotalTrackerBugTrackProvider
