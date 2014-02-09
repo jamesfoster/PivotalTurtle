@@ -54,7 +54,7 @@
 
 			messageBoxService = new Mock<IMessageBoxService>();
 			messageBoxService.Setup(x => x.ShowMessage(It.IsAny<string>()))
-				.Returns(Task.FromResult<object>(null));
+				.Returns(() => Task.FromResult<object>(null));
 
 			webClientProvider = new PivotalTrackerWebClientProvider();
 			pivotalTrackerClient = new PivotalTrackerClient(webClientProvider);
@@ -68,7 +68,8 @@
 				{
 					AuthController = new AuthController(logInView.Object, pivotalTrackerClient),
 					StoryListController = new StoryListController(storyListView.Object, pivotalTrackerClient, messageBoxService.Object),
-					GitConfig = gitConfigMock.Object
+					GitConfig = gitConfigMock.Object,
+					MessageBoxService = messageBoxService.Object
 				};
 		}
 
@@ -112,6 +113,8 @@
 			originalCommitDetails = fixture.Create<CommitDetails>();
 
 			selectStoriesTask = provider.GetNewCommitMessage(originalCommitDetails);
+
+			selectStoriesTask.IsFaulted.ShouldBe(false);
 		}
 
 		[Then(@"I should be asked to log in")]
@@ -206,6 +209,12 @@
 		public void ThenIShouldSeeAMessageToCreateAProjectOnPivotalTracker()
 		{
 			messageBoxService.Verify(x => x.ShowMessage("You are not assigned to any projects in PivotalTracker."));
+		}
+
+		[Then(@"I should see an authentication failure message")]
+		public void ThenIShouldSeeAnAuthenticationFailureMessage()
+		{
+			messageBoxService.Verify(x => x.ShowMessage("Failed to authenticate. Please check your API key."));
 		}
 
 		[Then(@"I should see my list of stories")]
