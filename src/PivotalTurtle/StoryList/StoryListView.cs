@@ -13,12 +13,12 @@
 			window.SetProjects(Projects);
 			window.SetStories(Stories);
 
+			SelectedStories = window.SelectedStories;
+
 			if (window.ShowDialog() != DialogResult.OK)
 			{
 				return Task.Delay(0);
 			}
-
-			SelectedStories = window.SelectedStories;
 
 			return Task.Delay(0);
 		}
