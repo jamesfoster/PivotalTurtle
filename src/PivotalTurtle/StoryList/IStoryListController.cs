@@ -4,6 +4,6 @@
 
 	public interface IStoryListController : IViewController<IStoryListView>
 	{
-		Task<Story> SelectStory();
+		Task<Story> SelectStory(Settings settings);
 	}
 }

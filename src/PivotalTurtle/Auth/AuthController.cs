@@ -13,10 +13,13 @@
 			Client = pivotalTrackerClient;
 		}
 
-		public string AuthToken { get; set; }
-
-		public async Task<bool> LogIn()
+		public async Task<bool> LogIn(Settings settings)
 		{
+			if (!Client.IsAuthenticated && settings.Token != null)
+			{
+				await Client.Authenticate(settings.Token);
+			}
+
 			if (!Client.IsAuthenticated)
 			{
 				await View.Show();

@@ -4,6 +4,6 @@
 
 	public interface IAuthController : IViewController<ILogInView>
 	{
-		Task<bool> LogIn();
+		Task<bool> LogIn(Settings settings);
 	}
 }

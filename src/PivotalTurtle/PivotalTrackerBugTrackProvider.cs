@@ -1,6 +1,5 @@
 ﻿namespace PivotalTurtle
 {
-	using System.Globalization;
 	using System.Threading.Tasks;
 	using PivotalTurtle.Auth;
 	using PivotalTurtle.StoryList;
@@ -9,12 +8,15 @@
 	{
 		public IAuthController AuthController { get; set; }
 		public IStoryListController StoryListController { get; set; }
+		public IGitConfig GitConfig { get; set; }
 
 		public async Task<CommitDetails> GetNewCommitMessage(CommitDetails details)
 		{
-			await AuthController.LogIn();
+			var settings = LoadSettings();
 
-			var story = await StoryListController.SelectStory();
+			await AuthController.LogIn(settings);
+
+			var story = await StoryListController.SelectStory(settings);
 
 			if (story == null)
 			{
@@ -25,6 +27,13 @@
 				{
 					Message = string.Format("[#{0}] {1}", story.Id, details.Message)
 				};
+		}
+
+		private Settings LoadSettings()
+		{
+			var config = GitConfig.Execute();
+
+			return new Settings(config);
 		}
 	}
 }

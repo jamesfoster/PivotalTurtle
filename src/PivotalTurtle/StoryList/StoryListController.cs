@@ -17,7 +17,7 @@
 			MessageBoxService = messageBoxService;
 		}
 
-		public async Task<Story> SelectStory()
+		public async Task<Story> SelectStory(Settings settings)
 		{
 			var projects = await Client.GetProjects();
 

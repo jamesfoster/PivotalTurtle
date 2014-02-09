@@ -29,6 +29,7 @@
 		private PivotalTrackerWebClientProvider webClientProvider;
 		private IPivotalTrackerClient pivotalTrackerClient;
 		private Mock<IMessageBoxService> messageBoxService;
+		private Dictionary<string, string> gitConfig;
 		private CommitDetails originalCommitDetails;
 		private Task<CommitDetails> selectStoriesTask;
 
@@ -58,10 +59,16 @@
 			webClientProvider = new PivotalTrackerWebClientProvider();
 			pivotalTrackerClient = new PivotalTrackerClient(webClientProvider);
 
+			var gitConfigMock = new Mock<IGitConfig>();
+			gitConfig = new Dictionary<string, string>();
+			gitConfigMock.Setup(x => x.Execute())
+				.Returns(gitConfig);
+
 			provider = new PivotalTrackerBugTrackProvider
 				{
 					AuthController = new AuthController(logInView.Object, pivotalTrackerClient),
-					StoryListController = new StoryListController(storyListView.Object, pivotalTrackerClient, messageBoxService.Object)
+					StoryListController = new StoryListController(storyListView.Object, pivotalTrackerClient, messageBoxService.Object),
+					GitConfig = gitConfigMock.Object
 				};
 		}
 
@@ -87,6 +94,16 @@
 			webClientProvider.Token = token;
 
 			pivotalTrackerClient.Token = token;
+		}
+
+		[Given(@"my api token is stored")]
+		public void GivenMyApiTokenIsStored()
+		{
+			var token = fixture.Create<string>();
+
+			gitConfig["pivotal-tracker.token"] = token;
+
+			webClientProvider.Token = token;
 		}
 
 		[When(@"I press the Select Stories button")]
@@ -216,6 +233,7 @@
 		[Then(@"the new commit message should contain the story id")]
 		public void ThenTheNewCommitMessageShouldContainTheStoryId()
 		{
+			selectStoriesTask.IsCompleted.ShouldBe(true);
 			var commitDetails = selectStoriesTask.Result;
 
 			var expectedMessage = string.Format("[#{0}] {1}", stories[0].Id, originalCommitDetails.Message);
