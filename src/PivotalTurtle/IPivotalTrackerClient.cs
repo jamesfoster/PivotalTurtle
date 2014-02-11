@@ -10,5 +10,6 @@
 		Task Authenticate(string token);
 		Task<List<Project>> GetProjects();
 		Task<List<Story>> GetAssignedStories();
+		Task<IEnumerable<Story>> GetStoriesForProject(long projectId);
 	}
 }

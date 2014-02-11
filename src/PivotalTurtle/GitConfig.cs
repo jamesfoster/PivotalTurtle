@@ -25,7 +25,7 @@
 			}
 			catch (Exception e)
 			{
-				throw new ApplicationException("Unable to load settings from git config");
+				throw new ApplicationException("Unable to load settings from git config", e);
 			}
 		}
 

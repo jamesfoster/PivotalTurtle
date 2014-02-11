@@ -12,3 +12,11 @@ Scenario: Selecting a story
 	When I select a story
 	And I click the OK button
 	Then the new commit message should contain the story id
+
+Scenario: Changing the selected project
+	Given I am logged in
+	And I am assigned to at least one project in PivotalTracker
+	And I am assigned to at least one story in PivotalTracker
+	When I press the Select Stories button
+	And I change the selected project
+	Then I should see only the stories for the selected project

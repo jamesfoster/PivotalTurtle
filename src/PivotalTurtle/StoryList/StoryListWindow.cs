@@ -1,54 +1,48 @@
 ﻿namespace PivotalTurtle.StoryList
 {
-	using System;
-	using System.Collections.Generic;
 	using System.Globalization;
 	using System.Windows.Forms;
 
 	public partial class StoryListWindow : Form
 	{
-		private readonly List<Project> projects;
-		private readonly List<Story> stories;
-		private readonly List<Story> selectedStories;
+		private readonly StoryListView viewModel;
 
-		public List<Story> SelectedStories { get { return selectedStories; }}
-
-		public StoryListWindow()
+		public StoryListWindow(StoryListView viewModel)
 		{
+			this.viewModel = viewModel;
 			InitializeComponent();
-
-			projects = new List<Project>();
-			stories = new List<Story>();
-			selectedStories = new List<Story>();
 		}
 
-		public void SetProjects(IEnumerable<Project> newProjects)
+		public void RefreshDisplay()
 		{
-			projects.Clear();
-			foreach (var project in newProjects)
+			RefreshProjects();
+			RefreshStories();
+		}
+
+		private void RefreshProjects()
+		{
+			projectDropDown.BeginUpdate();
+			try
 			{
-				projects.Add(project);
+				projectDropDown.Items.Clear();
+				foreach (var project in viewModel.Projects)
+				{
+					projectDropDown.Items.Add(project);
+				}
+			}
+			finally
+			{
+				projectDropDown.EndUpdate();
 			}
 		}
 
-		public void SetStories(IEnumerable<Story> newStories)
-		{
-			stories.Clear();
-			foreach (var story in newStories)
-			{
-				stories.Add(story);
-			}
-
-			DisplayStories();
-		}
-
-		private void DisplayStories()
+		private void RefreshStories()
 		{
 			storiesListView.BeginUpdate();
 			try
 			{
 				storiesListView.Items.Clear();
-				foreach (var story in stories)
+				foreach (var story in viewModel.Stories)
 				{
 					var item = new ListViewItem
 						{
@@ -71,7 +65,7 @@
 
 		private string ProjectName(long projectId)
 		{
-			var project = projects.Find(p => p.Id == projectId);
+			var project = viewModel.Projects.Find(p => p.Id == projectId);
 
 			return project != null ? project.Name : "unknown";
 		}
@@ -79,9 +73,14 @@
 		private void storiesListView_ItemChecked(object sender, ItemCheckedEventArgs e)
 		{
 			if (e.Item.Checked)
-				selectedStories.Add((Story) e.Item.Tag);
+				viewModel.SelectedStories.Add((Story) e.Item.Tag);
 			else
-				selectedStories.Remove((Story) e.Item.Tag);
+				viewModel.SelectedStories.Remove((Story) e.Item.Tag);
+		}
+
+		private void projectDropDown_SelectedIndexChanged(object sender, System.EventArgs e)
+		{
+			viewModel.SelectedProject = (Project) projectDropDown.SelectedItem;
 		}
 	}
 }

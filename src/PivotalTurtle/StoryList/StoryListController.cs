@@ -1,5 +1,6 @@
 ﻿namespace PivotalTurtle.StoryList
 {
+	using System.Collections.Generic;
 	using System.Linq;
 	using System.Threading.Tasks;
 	using PivotalTurtle.Services;
@@ -31,10 +32,16 @@
 
 			View.Projects = projects;
 			View.Stories = stories;
+			View.Controller = this;
 
 			await View.Show();
 
 			return View.SelectedStories.FirstOrDefault();
+		}
+
+		public async Task<IEnumerable<Story>> GetStoriesForProject(Project project)
+		{
+			return await Client.GetStoriesForProject(project.Id);
 		}
 	}
 }

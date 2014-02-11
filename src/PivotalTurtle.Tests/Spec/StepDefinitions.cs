@@ -34,7 +34,8 @@
 		private Task<CommitDetails> selectStoriesTask;
 
 		private List<Project> projects;
-		private List<Story> stories;
+		private List<Story> myStories;
+		private List<Story> projectStories;
 
 		[BeforeScenario]
 		public void SetUp()
@@ -179,9 +180,9 @@
 		[Given(@"I am assigned to at least one story in PivotalTracker")]
 		public void GivenIAmAssignedToAtLeastOneStoryInPivotalTracker()
 		{
-			stories = fixture.CreateMany<Story>().ToList();
+			myStories = fixture.CreateMany<Story>().ToList();
 
-			webClientProvider.Stories = stories;
+			webClientProvider.MyStories = myStories;
 		}
 
 
@@ -202,7 +203,7 @@
 		public void ThenIShouldNotSeeAListOfProjects()
 		{
 			storyListView.Verify(x => x.Show(), Times.Never());
-			storyListView.Object.Projects.ShouldBeEmpty();
+			storyListView.Object.Projects.ShouldBeNullOrEmpty();
 		}
 
 		[Then(@"I should see a message to create a project on PivotalTracker")]
@@ -221,7 +222,7 @@
 		public void ThenIShouldSeeMyListOfStories()
 		{
 			storyListView.Verify(x => x.Show(), Times.Once());
-			storyListView.Object.Stories.ShouldDeepEqual(stories);
+			storyListView.Object.Stories.ShouldDeepEqual(myStories);
 		}
 
 		[When(@"I select a story")]
@@ -229,7 +230,7 @@
 		{
 			storyListView.Object.SelectedStories = new List<Story>
 				{
-					stories[0]
+					myStories[0]
 				};
 		}
 
@@ -245,9 +246,32 @@
 			selectStoriesTask.IsCompleted.ShouldBe(true);
 			var commitDetails = selectStoriesTask.Result;
 
-			var expectedMessage = string.Format("[#{0}] {1}", stories[0].Id, originalCommitDetails.Message);
+			var expectedMessage = string.Format("[#{0}] {1}", myStories[0].Id, originalCommitDetails.Message);
 
 			commitDetails.Message.ShouldBe(expectedMessage);
 		}
+
+		[When(@"I change the selected project")]
+		public void WhenIChangeTheSelectedProject()
+		{
+			var project = projects[1];
+
+			projectStories = fixture.CreateMany<Story>().ToList();
+
+			webClientProvider.SelectedProjectId = project.Id;
+			webClientProvider.ProjectStories = projectStories;
+
+			storyListView.Object.SelectedProject = project;
+
+			var newStories = provider.StoryListController.GetStoriesForProject(project).Result;
+			storyListView.Object.Stories = newStories.ToList();
+		}
+
+		[Then(@"I should see only the stories for the selected project")]
+		public void ThenIShouldSeeOnlyTheStoriesForTheSelectedProject()
+		{
+			storyListView.Object.Stories.ShouldDeepEqual(projectStories);
+		}
+
 	}
 }

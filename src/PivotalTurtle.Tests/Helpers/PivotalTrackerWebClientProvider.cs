@@ -6,12 +6,15 @@
 	{
 		public string Token { get; set; }
 		public List<Project> Projects { get; set; }
-		public List<Story> Stories { get; set; }
+		public List<Story> MyStories { get; set; }
+		public List<Story> ProjectStories { get; set; }
+		public long SelectedProjectId { get; set; }
 
 		public PivotalTrackerWebClientProvider()
 		{
 			Projects = new List<Project>();
-			Stories = new List<Story>();
+			MyStories = new List<Story>();
+			ProjectStories = new List<Story>();
 		}
 
 		public IWebClient GetClient()

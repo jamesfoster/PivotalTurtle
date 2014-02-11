@@ -4,8 +4,10 @@
 
 	public interface IStoryListView : IView
 	{
-		IEnumerable<Project> Projects { get; set; }
-		IEnumerable<Story> Stories { get; set; }
+		List<Project> Projects { get; set; }
+		List<Story> Stories { get; set; }
 		List<Story> SelectedStories { get; set; }
+		IStoryListController Controller { get; set; }
+		Project SelectedProject { get; set; }
 	}
 }

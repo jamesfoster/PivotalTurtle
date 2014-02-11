@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\PivotalTrackerWebClient.cs" />
+    <Compile Include="Helpers\ShouldExtensions.cs" />
     <Compile Include="PluginTests.cs" />
     <Compile Include="Helpers\PivotalTrackerWebClientProvider.cs" />
     <Compile Include="Spec\ProjectList.feature.cs">

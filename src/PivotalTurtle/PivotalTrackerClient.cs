@@ -3,7 +3,6 @@
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using System.Text;
 	using System.Threading.Tasks;
 	using Newtonsoft.Json.Linq;
 
@@ -63,6 +62,28 @@
 
 			dynamic json = jToken;
 
+			var stories = ParseStories(json);
+
+			return stories;
+		}
+
+		public async Task<IEnumerable<Story>> GetStoriesForProject(long projectId)
+		{
+			var filter = "filter=state:started,unstarted,unscheduled";
+			var jToken = await MakeRequest(string.Format("https://www.pivotaltracker.com/services/v5/projects/{0}/stories?{1}", projectId, filter), Token);
+
+			if (jToken == null)
+				return new List<Story>();
+
+			dynamic json = jToken;
+
+			var stories = ParseStories(json);
+
+			return stories;
+		}
+
+		private List<Story> ParseStories(dynamic json)
+		{
 			var stories = new List<Story>();
 			foreach (var story in json)
 			{
@@ -75,7 +96,6 @@
 						State = state
 					});
 			}
-
 			return stories;
 		}
 

@@ -27,19 +27,38 @@
 			}
 			else
 			{
-				switch (url)
+				if (IsUserUrl(url))
 				{
-					case "https://www.pivotaltracker.com/services/v5/me":
-						result = GetUserResult();
-						break;
-
-					case "https://www.pivotaltracker.com/services/v5/my/work":
-						result = GetStoriesResult();
-						break;
+					result = GetUserResult();
+				}
+				else if (IsMyStoriesUrl(url))
+				{
+					result = GetMyStoriesResult();
+				}
+				else if (IsProjectStoriesUrl(url))
+				{
+					result = GetProjectStoriesResult();
 				}
 			}
 
 			return Task.FromResult(result);
+		}
+
+		private static bool IsUserUrl(string url)
+		{
+			return url == "https://www.pivotaltracker.com/services/v5/me";
+		}
+
+		private static bool IsMyStoriesUrl(string url)
+		{
+			return url == "https://www.pivotaltracker.com/services/v5/my/work";
+		}
+
+		private bool IsProjectStoriesUrl(string url)
+		{
+			var filter = "filter=state:started,unstarted,unscheduled";
+
+			return url == string.Format("https://www.pivotaltracker.com/services/v5/projects/{0}/stories?{1}", Provider.SelectedProjectId, filter);
 		}
 
 		private string UnauthorizedResult()
@@ -85,9 +104,16 @@
        }";
 		}
 
-		private string GetStoriesResult()
+		private string GetMyStoriesResult()
 		{
-			var storiesString = string.Join(",", Provider.Stories.Select(GetStoryString));
+			var storiesString = string.Join(",", Provider.MyStories.Select(GetStoryString));
+
+			return string.Format("[{0}]", storiesString);
+		}
+
+		private string GetProjectStoriesResult()
+		{
+			var storiesString = string.Join(",", Provider.ProjectStories.Select(GetStoryString));
 
 			return string.Format("[{0}]", storiesString);
 		}
