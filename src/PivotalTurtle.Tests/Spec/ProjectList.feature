@@ -16,3 +16,10 @@ Scenario: I'm not assigned to any projects
 	Then I should not see a list of projects
 	And I should see a message to create a project on PivotalTracker
 
+Scenario: Failure to log in
+	Given I am not logged in
+	When I press the Select Stories button
+	And I enter invalid credentials
+	And I click the Log in button
+	Then I should not see a list of projects
+	And I should see an authentication failure message
