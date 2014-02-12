@@ -1,25 +1,22 @@
 ﻿namespace PivotalTurtle
 {
+	using System;
 	using System.Collections.Generic;
 
 	public class Settings
 	{
-		private readonly Dictionary<string, string> config;
-
 		public Settings(Dictionary<string, string> config)
 		{
-			this.config = config;
+			TryGet(config, "pivotal-tracker.token", x => Token = x);
 		}
 
-		public string Token
+		void TryGet(IDictionary<string, string> config, string key, Action<string> func)
 		{
-			get
-			{
-				if (config.ContainsKey("pivotal-tracker.token"))
-					return config["pivotal-tracker.token"];
-
-				return null;
-			}
+			string value;
+			if (config.TryGetValue(key, out value))
+				func(value);
 		}
+
+		public string Token { get; set; }
 	}
 }

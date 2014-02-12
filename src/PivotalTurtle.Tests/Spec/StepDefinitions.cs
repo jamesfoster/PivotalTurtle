@@ -29,7 +29,8 @@
 		private PivotalTrackerWebClientProvider webClientProvider;
 		private IPivotalTrackerClient pivotalTrackerClient;
 		private Mock<IMessageBoxService> messageBoxService;
-		private Dictionary<string, string> gitConfig;
+		private Mock<IGitConfig> gitConfig;
+		private Dictionary<string, string> config;
 		private CommitDetails originalCommitDetails;
 		private Task<CommitDetails> selectStoriesTask;
 
@@ -55,21 +56,21 @@
 
 			messageBoxService = new Mock<IMessageBoxService>();
 			messageBoxService.Setup(x => x.ShowMessage(It.IsAny<string>()))
-				.Returns(() => Task.FromResult<object>(null));
+			                 .Returns(() => Task.FromResult<object>(null));
 
 			webClientProvider = new PivotalTrackerWebClientProvider();
 			pivotalTrackerClient = new PivotalTrackerClient(webClientProvider);
 
-			var gitConfigMock = new Mock<IGitConfig>();
-			gitConfig = new Dictionary<string, string>();
-			gitConfigMock.Setup(x => x.Load())
-				.Returns(gitConfig);
+			gitConfig = new Mock<IGitConfig>();
+			config = new Dictionary<string, string>();
+			gitConfig.Setup(x => x.Load())
+			             .Returns(config);
 
 			provider = new PivotalTrackerBugTrackProvider
 				{
 					AuthController = new AuthController(logInView.Object, pivotalTrackerClient),
 					StoryListController = new StoryListController(storyListView.Object, pivotalTrackerClient, messageBoxService.Object),
-					GitConfig = gitConfigMock.Object,
+					GitConfig = gitConfig.Object,
 					MessageBoxService = messageBoxService.Object
 				};
 		}
@@ -103,9 +104,20 @@
 		{
 			var token = fixture.Create<string>();
 
-			gitConfig["pivotal-tracker.token"] = token;
+			config["pivotal-tracker.token"] = token;
 
 			webClientProvider.Token = token;
+		}
+
+		[Then(@"my API key should be stored")]
+		public void ThenMyApiKeyShouldBeStored()
+		{
+			var expectedSettings = new Dictionary<string, string>
+				{
+					{"pivotal-tracker.token", webClientProvider.Token}
+				};
+
+			gitConfig.Verify(x => x.SaveGlobal(ItIs.DeepEqualTo(expectedSettings)));
 		}
 
 		[When(@"I press the Select Stories button")]

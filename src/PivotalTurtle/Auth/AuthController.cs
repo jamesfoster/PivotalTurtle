@@ -25,6 +25,11 @@
 				await View.Show();
 
 				await Client.Authenticate(View.Token);
+
+				if (Client.IsAuthenticated)
+				{
+					settings.Token = Client.Token;
+				}
 			}
 
 			return Client.IsAuthenticated;

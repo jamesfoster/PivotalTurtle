@@ -5,5 +5,6 @@
 	public interface IGitConfig
 	{
 		Dictionary<string, string> Load();
+		void SaveGlobal(Dictionary<string, string> settings);
 	}
 }

@@ -1,5 +1,6 @@
 ﻿namespace PivotalTurtle
 {
+	using System.Collections.Generic;
 	using System.Threading.Tasks;
 	using PivotalTurtle.Auth;
 	using PivotalTurtle.Services;
@@ -16,13 +17,15 @@
 		{
 			var settings = LoadSettings();
 
-			bool authenticated = await AuthController.LogIn(settings);
+			var authenticated = await AuthController.LogIn(settings);
 
 			if (!authenticated)
 			{
 				await MessageBoxService.ShowMessage("Failed to authenticate. Please check your API key.");
 				return details;
 			}
+
+			SaveSettings(settings);
 
 			var story = await StoryListController.SelectStory(settings);
 
@@ -35,6 +38,16 @@
 				{
 					Message = string.Format("[#{0}] {1}", story.Id, details.Message)
 				};
+		}
+
+		private void SaveSettings(Settings settings)
+		{
+			var config = new Dictionary<string, string>
+				{
+					{"pivotal-tracker.token", settings.Token}
+				};
+
+			GitConfig.SaveGlobal(config);
 		}
 
 		private Settings LoadSettings()
