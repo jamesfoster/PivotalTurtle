@@ -29,27 +29,22 @@
 			}
 		}
 
-		public void SaveGlobal(Dictionary<string, string> settings)
+		public void SaveGlobal(string name, string value)
 		{
 			try
 			{
-				foreach (var setting in settings)
-				{
-					var argument = string.Format("config --global {0} {1}", setting.Key, setting.Value);
+				var argument = string.Format("config --global {0} {1}", name, value);
 
-					var info = new ProcessStartInfo("git", argument)
-						{
-							RedirectStandardOutput = true,
-							UseShellExecute = false,
-							CreateNoWindow = true
-						};
+				var info = new ProcessStartInfo("git", argument)
+					{
+						RedirectStandardOutput = true,
+						UseShellExecute = false,
+						CreateNoWindow = true
+					};
 
-					var process = Process.Start(info);
+				var process = Process.Start(info);
 
-					process.WaitForExit(); // HACK: BAD
-				}
-
-
+				process.WaitForExit(); // HACK: BAD
 			}
 			catch (Exception e)
 			{

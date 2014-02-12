@@ -112,12 +112,7 @@
 		[Then(@"my API key should be stored")]
 		public void ThenMyApiKeyShouldBeStored()
 		{
-			var expectedSettings = new Dictionary<string, string>
-				{
-					{"pivotal-tracker.token", webClientProvider.Token}
-				};
-
-			gitConfig.Verify(x => x.SaveGlobal(ItIs.DeepEqualTo(expectedSettings)));
+			gitConfig.Verify(x => x.SaveGlobal("pivotal-tracker.token", webClientProvider.Token));
 		}
 
 		[When(@"I press the Select Stories button")]

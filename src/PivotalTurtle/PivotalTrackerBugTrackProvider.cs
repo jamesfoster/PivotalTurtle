@@ -42,12 +42,7 @@
 
 		private void SaveSettings(Settings settings)
 		{
-			var config = new Dictionary<string, string>
-				{
-					{"pivotal-tracker.token", settings.Token}
-				};
-
-			GitConfig.SaveGlobal(config);
+			GitConfig.SaveGlobal("pivotal-tracker.token", settings.Token);
 		}
 
 		private Settings LoadSettings()
